@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:zoom-pad}",
+      "name": "Debug zoom-pad",
+      "program": "${workspaceFolder:zoom-pad}/.build/debug/zoom-pad",
+      "preLaunchTask": "swift: Build Debug zoom-pad"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:zoom-pad}",
+      "name": "Release zoom-pad",
+      "program": "${workspaceFolder:zoom-pad}/.build/release/zoom-pad",
+      "preLaunchTask": "swift: Build Release zoom-pad"
+    }
+  ]
+}
