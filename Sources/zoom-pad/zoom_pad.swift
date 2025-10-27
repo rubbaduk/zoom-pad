@@ -4,6 +4,8 @@ import Foundation
 // ref: https://developer.apple.com/documentation/coregraphics/quartz-event-services
 
 let triggerModifier: CGEventFlags = .maskCommand
+let invertScroll: Bool = false
+let stepThreshold: Double = 85.0
 
 private func requestAccessibility() {
     // prompt for accessibility permission
@@ -17,6 +19,7 @@ private func requestAccessibility() {
 
 nonisolated(unsafe) var eventTap: CFMachPort?
 nonisolated(unsafe) var runLoopSource: CFRunLoopSource?
+nonisolated(unsafe) var accum: Double = 0.0
 
 func setupTap() {
     let mask = CGEventMask(1 << CGEventType.scrollWheel.rawValue)
@@ -44,11 +47,29 @@ func setupTap() {
                 return Unmanaged.passUnretained(event)
             }
 
-            // scroll data
-            let pointDelta = event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1)
-            let lineDelta = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
+            // use whatever scroll data is present
+            // pixel - double vals from trackpad
+            // line - int64 vals from scrollwheel
 
-            print(String(format: "⌘ modifier held — point=%.2f line=%ld", pointDelta, lineDelta))
+            var delta = event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1)
+            if delta == 0 {
+                delta = Double(event.getIntegerValueField(.scrollWheelEventPointDeltaAxis1))
+            }
+
+            if invertScroll {
+                delta = -delta
+            }
+
+            accum += delta
+
+            while accum >= stepThreshold {
+                accum -= stepThreshold
+                print("zoom in")
+            }
+            while accum <= -stepThreshold {
+                accum += stepThreshold
+                print("zoom out")
+            }
 
             // TODO: zoom logic
             return Unmanaged.passUnretained(event)
@@ -66,7 +87,7 @@ func setupTap() {
     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
     CGEvent.tapEnable(tap: tap, enable: true)
 
-    print("scroll logger active")
+    print("scroll logger active - to test: hold modifier and scroll")
 }
 
 @main
