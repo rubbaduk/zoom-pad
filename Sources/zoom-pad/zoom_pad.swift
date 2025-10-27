@@ -1,4 +1,5 @@
 import ApplicationServices
+import Carbon.HIToolbox
 import Foundation
 
 // ref: https://developer.apple.com/documentation/coregraphics/quartz-event-services
@@ -15,6 +16,25 @@ private func requestAccessibility() {
         ] as CFDictionary
     let trusted = AXIsProcessTrustedWithOptions(opts)
     // ref: https://developer.apple.com/documentation/applicationservices/1459186-axisprocesstrustedwithoptions
+}
+
+func sendKey(_ key: CGKeyCode, flags: CGEventFlags) {
+    if let down = CGEvent(keyboardEventSource: nil, virtualKey: key, keyDown: true) {
+        down.flags = flags
+        down.post(tap: .cghidEventTap)
+    }
+    if let up = CGEvent(keyboardEventSource: nil, virtualKey: key, keyDown: false) {
+        up.flags = flags
+        up.post(tap: .cghidEventTap)
+    }
+
+}
+
+func zoomIn() {
+    sendKey(CGKeyCode(kVK_ANSI_Equal), flags: .maskCommand)
+}
+func zoomOut() {
+    sendKey(CGKeyCode(kVK_ANSI_Minus), flags: .maskCommand)
 }
 
 nonisolated(unsafe) var eventTap: CFMachPort?
@@ -63,16 +83,15 @@ func setupTap() {
             accum += delta
 
             while accum >= stepThreshold {
+                zoomIn()
                 accum -= stepThreshold
-                print("zoom in")
             }
             while accum <= -stepThreshold {
+                zoomOut()
                 accum += stepThreshold
-                print("zoom out")
             }
 
-            // TODO: zoom logic
-            return Unmanaged.passUnretained(event)
+            return nil
         },
         userInfo: nil
     )
