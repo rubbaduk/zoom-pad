@@ -4,7 +4,7 @@ A lightweight macOS utility that enables smooth zoom functionality using mousewh
 
 ## Features
 
-- **Smooth Zoom Control**: Zoom in and out of any application using trackpad scroll gestures
+- **Smooth Zoom Control**: Zoom in and out of any application using mousewheel scroll gestures
 - **Modifier Key Support**: Uses Command key as the default trigger modifier
 - **Configurable Threshold**: Adjustable scroll sensitivity for precise control
 - **Scroll Direction**: Optional scroll inversion support
@@ -42,7 +42,7 @@ zoom-pad intercepts mousewheel scroll events when the modifier key (Command by d
 
 1. Launch zoom-pad
 2. Grant accessibility permissions when prompted (required for intercepting scroll events)
-3. Hold the Command key and scroll on your trackpad to zoom in/out
+3. Hold the Command key and scroll with mousewheel to zoom in/out
 4. The application runs in the background until terminated
 
 ## Configuration
@@ -55,7 +55,7 @@ You can modify the following constants in `zoom_pad.swift` to customize behavior
 
 ## Permissions
 
-This app requires **Accessibility** permissions to intercept trackpad scroll events. macOS will prompt you to grant these permissions when you first run the application.
+This app requires **Accessibility** permissions to intercept mousewheel scroll events. macOS will prompt you to grant these permissions when you first run the application.
 
 To manually grant permissions:
 1. Go to System Preferences → Security & Privacy → Privacy
